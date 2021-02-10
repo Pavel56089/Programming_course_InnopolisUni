@@ -60,9 +60,9 @@ void findAndUp(){
             }
             countw = 0;
         }
-        cout << counts << endl;
+        fout << counts << endl;
         for (string news: newsentences){
-            cout << news << endl;
+            fout << news << endl;
         }
         counts = 0;
         newsentences.clear();
