@@ -5,20 +5,8 @@
 
 using namespace std;
 
-
-vector <string> sentences;
-vector <string> newsentences;
-string word;
-string line;
-ifstream fin("in.txt");
-ofstream fout("out.txt");
-int n = 0;
-
-string toUpper(){
-    return "fwfe";
-}
-
-void divide_sentences(string line){
+vector <string> divide_sentences(string line){
+    vector <string> sentences;
     int i = 0;
     while (i < line.size()) {
         if (line[i] == ' ' || line[i] == '\t') {
@@ -33,55 +21,62 @@ void divide_sentences(string line){
             i++;
         }
     }
+    return sentences;
 }
 
-void findAndUp(){
+vector <string> findAndUp(vector <string> sentences, int n, string word){
+    vector <string> newsentences;
     string newsentence;
     int countw = 0, counts = 0;
-    for (int i=0;i<n;i++){
-        fin >> word;
-        for (string sentece: sentences){
-            string::size_type start_pos = 0;
-            newsentence = sentece;
-            string upword = word;
-            transform(upword.begin(), upword.end(),upword.begin(), ::toupper);
-            while( std::string::npos !=
-                   ( start_pos = sentece.find( word, start_pos ) ) )
-            {
-                for(int j = 0;j<word.length();j++){
-                    newsentence[start_pos + j] = upword[j];
-                }
-                ++start_pos;
-                countw++;
+    for (string sentece: sentences){
+        string::size_type start_pos = 0;
+        newsentence = sentece;
+        string upword = word;
+        transform(upword.begin(), upword.end(),upword.begin(), ::toupper);
+        while( std::string::npos !=
+               ( start_pos = sentece.find( word, start_pos ) ) )
+        {
+            for(int j = 0;j<word.length();j++){
+                newsentence[start_pos + j] = upword[j];
             }
-            if (countw > 0){
-                counts++;
-                newsentences.push_back(newsentence);
-            }
-            countw = 0;
+            ++start_pos;
+            countw++;
         }
-        fout << counts << endl;
-        for (string news: newsentences){
-            fout << news << endl;
+        if (countw > 0){
+            counts++;
+            newsentences.push_back(newsentence);
         }
-        counts = 0;
-        newsentences.clear();
+        countw = 0;
     }
+    return newsentences;
 }
 
 
 int main() {
+    ifstream fin("in.txt");
+    ofstream fout("out.txt");
+    vector <string> sentences;
+    vector <string> newsentences;
+    string word;
+    string line;
+
+    int n = 0;
 
 
-    int countw = 0, counts = 0;
     //Get line
     getline(fin, line, '\n');
 
     //Get sentences
-
-
-    divide_sentences(line);
+    sentences = divide_sentences(line);
     fin >> n;
-    findAndUp();
 
+    for (int i=0;i<n;i++){
+        fin >> word;
+        newsentences = findAndUp(sentences, n, word);
+        fout << newsentences.size() << endl;
+        for (string news: newsentences){
+            fout << news << endl;
+        }
+        newsentences.clear();
+    }
 }
